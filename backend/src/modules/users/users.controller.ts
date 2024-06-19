@@ -8,7 +8,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  async create(@Body() registerDto: RegisterDto) {
+  async create(
+    @Body()
+    registerDto: RegisterDto,
+  ) {
     return this.usersService.create(registerDto);
   }
 
@@ -18,7 +21,10 @@ export class UsersController {
   }
 
   @Get(':username')
-  async findOne(@Param('username') username: string) {
+  async findOne(
+    @Param('username')
+    username: string,
+  ) {
     return this.usersService.findOne(username);
   }
 }

@@ -27,11 +27,12 @@ describe('AuthService', () => {
           provide: JwtService,
           useClass: Repository,
           useValue: {
-            create: jest
-              .fn()
-              .mockImplementation((user: RegisterDto) =>
-                Promise.resolve({ id: '1', ...user }),
-              ),
+            create: jest.fn().mockImplementation((user: RegisterDto) =>
+              Promise.resolve({
+                id: '1',
+                ...user,
+              }),
+            ),
           },
         },
         {

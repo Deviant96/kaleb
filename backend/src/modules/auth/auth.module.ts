@@ -10,7 +10,9 @@ import { UsersService } from 'src/modules/users/users.service';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+    }),
     ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
