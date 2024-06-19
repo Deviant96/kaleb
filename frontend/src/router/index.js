@@ -1,11 +1,8 @@
-import {
-  createRouter,
-  createWebHistory
-} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 import Profile from '../components/Profile.vue'
-import AuthService from '../services/auth.service';
+import AuthService from '../services/auth.service'
 
 const routes = [
   {
@@ -17,9 +14,9 @@ const routes = [
     component: Login,
     beforeEnter: (to, from, next) => {
       if (AuthService.isAuthenticated()) {
-        next({ name: 'Profile' });
+        next({ name: 'Profile' })
       } else {
-        next();
+        next()
       }
     }
   },
@@ -28,9 +25,9 @@ const routes = [
     component: Register,
     beforeEnter: (to, from, next) => {
       if (AuthService.isAuthenticated()) {
-        next({ name: 'Profile' });
+        next({ name: 'Profile' })
       } else {
-        next();
+        next()
       }
     }
   },

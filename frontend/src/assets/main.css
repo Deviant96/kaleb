@@ -34,7 +34,8 @@ form div {
   margin-bottom: 10px;
 }
 
-form input, form button {
+form input,
+form button {
   width: 100%;
 }
 

@@ -7,6 +7,6 @@ export const config = (): ConfigProps => ({
     expires: process.env.JWT_EXPIRES,
   },
   api: {
-    apiUrl: process.env.API_URL
-  }
+    apiUrl: process.env.API_URL,
+  },
 });

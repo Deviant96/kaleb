@@ -1,7 +1,7 @@
 <style>
-  div h2 {
-    text-align: center;
-  }
+div h2 {
+  text-align: center;
+}
 </style>
 
 <template>
@@ -10,11 +10,23 @@
     <form @submit.prevent="login">
       <div>
         <label>Username</label>
-        <input type="text" v-model="username" aria-label="Username" placeholder="Enter your username" required />
+        <input
+          type="text"
+          v-model="username"
+          aria-label="Username"
+          placeholder="Enter your username"
+          required
+        />
       </div>
       <div>
         <label>Password</label>
-        <input type="password" v-model="password" aria-label="Password" placeholder="Enter your password" required />
+        <input
+          type="password"
+          v-model="password"
+          aria-label="Password"
+          placeholder="Enter your password"
+          required
+        />
       </div>
       <div>
         <button type="submit">Login</button>
@@ -25,29 +37,39 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      error: null
-    };
-  },
-  methods: {
-    ...mapActions('auth', ['loginUser']),
-    async login() {
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+
+    const username = ref('')
+    const password = ref('')
+    const error = ref(null)
+
+    const login = async () => {
       try {
-        await this.loginUser({
-          username: this.username,
-          password: this.password,
-        });
-        this.$router.push('/profile');
+        await store.dispatch('auth/loginUser', {
+          username: username.value,
+          password: password.value
+        })
+        router.push('/profile')
       } catch (err) {
-        this.error = err.response ? err.response.data.message : 'Server is offline. Please try again later.';
+        error.value = err.response
+          ? err.response.data.message
+          : 'Server is offline. Please try again later.'
       }
-    },
-  },
-};
+    }
+
+    return {
+      username,
+      password,
+      error,
+      login
+    }
+  }
+}
 </script>

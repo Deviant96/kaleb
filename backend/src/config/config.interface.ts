@@ -3,8 +3,8 @@ interface ApiConfigProps {
 }
 
 interface JwtConfigProps {
-    secret: string;
-    expires: string;
+  secret: string;
+  expires: string;
 }
 
 export interface ConfigProps {

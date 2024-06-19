@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode'
 import AuthService from '../services/auth.service'
 
 const user = JSON.parse(localStorage.getItem('user'))
@@ -9,33 +10,35 @@ export const auth = {
   namespaced: true,
   state: initialState,
   actions: {
-    loginUser({ commit }, user) {
-      return AuthService.login(user).then(
-        (user) => {
-          commit('loginSuccess', user)
-          return Promise.resolve(user)
-        },
-        (error) => {
-          commit('loginFailure')
-          return Promise.reject(error)
-        }
-      )
+    async loginUser({ commit }, credentials) {
+      try {
+        const response = await AuthService.login(credentials)
+        const { access_token } = response
+        const user = jwtDecode(access_token)
+        localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('token', access_token)
+        commit('loginSuccess', user)
+        return Promise.resolve(user)
+      } catch (error) {
+        commit('loginFailure')
+        return Promise.reject(error)
+      }
     },
     logout({ commit }) {
       AuthService.logout()
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
       commit('logout')
     },
-    registerUser({ commit }, user) {
-      return AuthService.register(user).then(
-        (response) => {
-          commit('registerSuccess')
-          return Promise.resolve(response.data)
-        },
-        (error) => {
-          commit('registerFailure')
-          return Promise.reject(error)
-        }
-      )
+    async registerUser({ commit }, user) {
+      try {
+        const response = await AuthService.register(user)
+        commit('registerSuccess')
+        return Promise.resolve(response.data)
+      } catch (error) {
+        commit('registerFailure')
+        return Promise.reject(error)
+      }
     }
   },
   mutations: {
@@ -57,5 +60,8 @@ export const auth = {
     registerFailure(state) {
       state.status.loggedIn = false
     }
+  },
+  getters: {
+    user: (state) => state.user
   }
 }
