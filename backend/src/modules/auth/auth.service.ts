@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '../users/entities/user.entity';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
+import { LoggingService } from '../logger/logger.service';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly loggingService: LoggingService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -33,12 +35,15 @@ export class AuthService {
     return null;
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, ipAddress: string) {
     const { username, password } = loginDto;
     const user = await this.validateUser(username, password);
     if (!user) {
+      this.loggingService.logLoginFailure(username, ipAddress);
       throw new NotAcceptableException('Invalid credentials');
     }
+
+    this.loggingService.logLoginSuccess(username, ipAddress);
 
     const payload = {
       name: user.name,
